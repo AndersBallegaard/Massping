@@ -8,7 +8,7 @@ import time
 import threading
 import signal
 import platform
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 
@@ -47,11 +47,12 @@ def ping(host_tuple):
     HOSTS[hostname]["LastState_change"] = None
 
 
-    #add up and down counters to track sucess rate. Note: this is not avalibility since a failed ping takes longer than a sucessful one
+    #add up and down counters to track sucess rate.
+    #Note: this is not avalibility since a failed ping takes longer than a sucessful one
     HOSTS[hostname]["counterUP"] = 0
     HOSTS[hostname]["counterDOWN"] = 0
-    
-    
+
+
 
     #set hostname in dict
     HOSTS[hostname]["host"] = address
@@ -153,13 +154,13 @@ def update():
 
         for host_, value in HOSTS.items():
             host = value["host"]
-            
+
             status = status_decoder[value["status"]]
 
             sucess_rate = 0
             try:
                 sucess_rate = round(int(value["counterUP"]) / int(value["counterDOWN"]), 2)
-            
+
             except ZeroDivisionError:
                 sucess_rate = 100
 
@@ -167,7 +168,7 @@ def update():
 
             last_changed = value["LastState_change"]
             time_connected = ""
-            
+
             if last_changed is None or "Connected" in status:
                 last_changed = datetime.now()
             else:
