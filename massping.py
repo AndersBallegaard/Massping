@@ -159,10 +159,12 @@ def update():
 
             sucess_rate = 0
             try:
-                sucess_rate = round(int(value["counterUP"]) / int(value["counterDOWN"]), 2)
+                sucess_rate = round(100 - (int(value["counterDOWN"]) / int(value["counterUP"])), 2)
 
             except ZeroDivisionError:
                 sucess_rate = 100
+                if int(value["counterUP"]) == 0:
+                    sucess_rate = 0
 
             sucess_rate = str(sucess_rate) + "%"
 

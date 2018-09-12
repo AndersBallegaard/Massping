@@ -3,3 +3,23 @@ Google DNS 2,8.8.4.4
 Cloudflare DNS,1.1.1.1
 Localhost,127.0.0.1
 Phone,172.16.0.13
+Example.com,example.com
+Gitlab,gitlab.com
+Github,github.com
+Python,python.org
+Pip,pythonhosted.org
+NSA,nsa.gov
+Google,google.com
+Bing,bing.com
+Reddit,reddit.com
+Youtube,youtube.com
+Cisco,cisco.com
+Wikipedia,wikipedia.org
+Twitter,twitter.com
+RIPE NCC,ripe.net
+Anderstb.dk,anderstb.dk
+192.168.1.1,192.168.1.1
+10.0.0.1,10.0.0.1
+Ubuntu,ubuntu.com
+Debian,debian.org
+Slackware,slackware.com
