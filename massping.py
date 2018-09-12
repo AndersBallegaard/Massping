@@ -71,9 +71,9 @@ def pad(string,l):
 def update():
     #status decoder
     status_decoder = {
-        0 : "Connected",
-        1 : "Error",
-        2 : "Init"
+        0 : "\033[1;32mConnected\033[1;m",
+        1 : "\033[1;31mError\033[1;m",
+        2 : "\033[1;36mInit\033[1;m"
     }
 
     #banner names
