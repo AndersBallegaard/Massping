@@ -8,6 +8,7 @@ import time
 import threading
 import signal
 import platform
+from datetime import datetime, timedelta
 
 
 
@@ -16,7 +17,8 @@ def help_menu():
     Prints the help page for -h or no argument
     '''
     print("massping.py\n \
-        --csv -c <file>    CSV like file. Format: [name],[address] newline [name],[address]....\n\
+        --csv -c <file>    CSV like file. Format: [name],[address] newline [name],[address]....\n \
+        --help -h          Shows this \
     \
     ")
 
@@ -41,6 +43,16 @@ def ping(host_tuple):
     #create a clear key and dict in hosts
     HOSTS[hostname] = {}
 
+    #Last state change used to detect period of up and down time
+    HOSTS[hostname]["LastState_change"] = None
+
+
+    #add up and down counters to track sucess rate. Note: this is not avalibility since a failed ping takes longer than a sucessful one
+    HOSTS[hostname]["counterUP"] = 0
+    HOSTS[hostname]["counterDOWN"] = 0
+    
+    
+
     #set hostname in dict
     HOSTS[hostname]["host"] = address
 
@@ -58,9 +70,18 @@ def ping(host_tuple):
     while SHOULD_PING_RUN:
         failed = subprocess.call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         if not failed:
+            if HOSTS[hostname]["status"] is not 0:
+                HOSTS[hostname]["LastState_change"] = datetime.now()
+
             HOSTS[hostname]["status"] = 0
+            HOSTS[hostname]["LastState_change"] = datetime.now()
+            HOSTS[hostname]["counterUP"] += 1
         else:
+            if HOSTS[hostname]["status"] is not 1:
+                HOSTS[hostname]["LastState_change"] = datetime.now()
+
             HOSTS[hostname]["status"] = 1
+            HOSTS[hostname]["counterDOWN"] += 1
         time.sleep(2)
 
 
@@ -72,7 +93,7 @@ def pad(string, deciered_len):
     '''
     spaces = "                                  "
     space_len = deciered_len - len(str(string))
-    return string + spaces[0:space_len]
+    return str(string) + spaces[0:space_len]
 
 
 
@@ -91,11 +112,15 @@ def update():
     b_name = "Name"
     b_address = "Address"
     b_status = "Status"
+    b_success_rate = "Success rate"
+    b_time_connected = "Time Disconnected"
 
     #find lengths diffrent fields need to be
     f_name = len(b_name)
     f_address = len(b_address)
     f_status = len(b_status)
+    f_success_rate = len(b_success_rate)
+    f_time_connected = len(b_time_connected)
 
     for host, value in HOSTS.items():
         #set name field length
@@ -120,15 +145,41 @@ def update():
         print("Massping")
         print(f"{pad(b_name,f_name)} \
              {pad(b_address,f_address)}   \
+             {pad(b_time_connected,f_time_connected)}    \
+             {pad(b_success_rate,f_success_rate)}  \
               {pad(b_status,f_status)}")
+
+
+
         for host_, value in HOSTS.items():
             host = value["host"]
+            
             status = status_decoder[value["status"]]
-            print(f"{pad(host_,f_name)} \
-             {pad(host,f_address)}   \
-              {pad(status,f_status)}")
+
+            sucess_rate = 0
+            try:
+                sucess_rate = round(int(value["counterUP"]) / int(value["counterDOWN"]), 2)
+            
+            except ZeroDivisionError:
+                sucess_rate = 100
+
+            sucess_rate = str(sucess_rate) + "%"
+
+            last_changed = value["LastState_change"]
+            time_connected = ""
+            
+            if last_changed is None or "Connected" in status:
+                last_changed = datetime.now()
+            else:
+                time_connected = datetime.now() - last_changed
+
+            print(f"{pad(host_, f_name)} \
+             {pad(host, f_address)}   \
+             {pad(time_connected, f_time_connected)}    \
+             {pad(str(sucess_rate), f_success_rate)}  \
+              {pad(status, f_status)}")
         print("press ctrl+c to stop")
-        time.sleep(2)
+        time.sleep(0.1)
 
 
 def csv_like_list():
