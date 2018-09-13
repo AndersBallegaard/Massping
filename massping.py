@@ -18,7 +18,8 @@ def help_menu():
     '''
     print("massping.py\n \
         --csv -c <file>    CSV like file. Format: [name],[address] newline [name],[address]....\n \
-        --help -h          Shows this \
+        --string -s        Import hosts from commandline. Format: [name],[address] [name],[address]........\n \
+        --help -h          Shows this \n \
     \
     ")
 
@@ -216,6 +217,29 @@ def csv_like_list():
 
 
 
+
+def cli_host_list():
+    '''
+    Host handeler for people that want to input hosts directly on the commandline
+    format: [-s --string] Google,8.8.8.8 cloudflare:1.1.1.1
+    '''
+    
+    #find the last host on cli
+    last_host_int = len(sys.argv)
+
+    # loop over all hosts. 
+    # adds 1 to range to combensate for range not including last number
+    for host_args_int in range(2,last_host_int):
+        host = sys.argv[host_args_int]
+        name = host.split(',')[0]
+        address = host.split(',')[1]
+        host_thread = threading.Thread(target=ping, args=[(name, address)])
+        host_thread.start()
+
+    update()
+
+
+
 def argument_handeler():
     """
     Handels arguments and calls the right functions
@@ -224,7 +248,9 @@ def argument_handeler():
         "-h" : help_menu,
         "--help" : help_menu,
         "-c" : csv_like_list,
-        "--csv" : csv_like_list
+        "--csv" : csv_like_list,
+        "-s" : cli_host_list,
+        "--string" : cli_host_list
     }
 
     return_function = None
