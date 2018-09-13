@@ -9,6 +9,7 @@ import threading
 import signal
 import platform
 from datetime import datetime
+import os
 
 
 
@@ -19,6 +20,7 @@ def help_menu():
     print("massping.py\n \
         --csv -c <file>    CSV like file. Format: [name],[address] newline [name],[address]....\n \
         --string -s        Import hosts from commandline. Format: [name],[address] [name],[address]........\n \
+        --create-list -cl  Simple tool to create a host file compatible with --csv\n \
         --help -h          Shows this \n \
     \
     ")
@@ -238,6 +240,63 @@ def cli_host_list():
 
     update()
 
+def create_list():
+    '''
+    Create a list compatible with -c/--csv
+    '''
+    #print a quick intro to the function
+    print("A quick guide to create or add hosts to a file compatible with --csv or -c")
+
+    #get the file name
+    file_name = input("filename: ")
+    
+
+    #prefix string is used to add newlines when needed
+    prefix_string = ""
+
+    #check if file exists and offer to append if it does
+    write_mode = "w"
+    if os.path.exists(file_name):
+        #loop to repeatly ask user if user is a little slow to get things
+        user_gave_proper_answer = False
+        while not user_gave_proper_answer:
+            append_question = input("Do you want to append?[y/n](y) ")
+            
+            #verify that user gave a proper answer
+            if append_question in ["","y","Y","n","N"]:
+                user_gave_proper_answer = True
+
+                #if user want to append change write mode
+                if append_question in ["","y","Y"]:
+                    write_mode = "a"
+                    prefix_string = "\n"
+
+    #open the file as File
+    File = open(file_name,write_mode)
+
+    print("Let's start adding hosts")
+    print("end with empty name")
+
+    mem_host_store = ""
+
+
+    #loop to add host
+    keep_on_looping = True
+    
+    while keep_on_looping:
+
+        hostname = input("Name: ")
+        if hostname is "":
+            keep_on_looping = False
+        else:
+            
+            address = input("Address: ")
+            mem_host_store += f"{prefix_string}{hostname},{address}"
+            prefix_string = "\n"
+
+    File.write(mem_host_store)
+    File.close()
+
 
 
 def argument_handeler():
@@ -250,7 +309,9 @@ def argument_handeler():
         "-c" : csv_like_list,
         "--csv" : csv_like_list,
         "-s" : cli_host_list,
-        "--string" : cli_host_list
+        "--string" : cli_host_list,
+        "-cl" : create_list,
+        "--create-list" : create_list
     }
 
     return_function = None
