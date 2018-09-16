@@ -225,13 +225,13 @@ def cli_host_list():
     Host handeler for people that want to input hosts directly on the commandline
     format: [-s --string] Google,8.8.8.8 cloudflare:1.1.1.1
     '''
-    
+
     #find the last host on cli
     last_host_int = len(sys.argv)
 
-    # loop over all hosts. 
+    # loop over all hosts.
     # adds 1 to range to combensate for range not including last number
-    for host_args_int in range(2,last_host_int):
+    for host_args_int in range(2, last_host_int):
         host = sys.argv[host_args_int]
         name = host.split(',')[0]
         address = host.split(',')[1]
@@ -249,7 +249,7 @@ def create_list():
 
     #get the file name
     file_name = input("filename: ")
-    
+
 
     #prefix string is used to add newlines when needed
     prefix_string = ""
@@ -261,18 +261,18 @@ def create_list():
         user_gave_proper_answer = False
         while not user_gave_proper_answer:
             append_question = input("Do you want to append?[y/n](y) ")
-            
+
             #verify that user gave a proper answer
-            if append_question in ["","y","Y","n","N"]:
+            if append_question in ["", "y", "Y", "n", "N"]:
                 user_gave_proper_answer = True
 
                 #if user want to append change write mode
-                if append_question in ["","y","Y"]:
+                if append_question in ["", "y", "Y"]:
                     write_mode = "a"
                     prefix_string = "\n"
 
     #open the file as File
-    File = open(file_name,write_mode)
+    host_file = open(file_name, write_mode)
 
     print("Let's start adding hosts")
     print("end with empty name")
@@ -282,20 +282,19 @@ def create_list():
 
     #loop to add host
     keep_on_looping = True
-    
+
     while keep_on_looping:
 
         hostname = input("Name: ")
         if hostname is "":
             keep_on_looping = False
         else:
-            
             address = input("Address: ")
             mem_host_store += f"{prefix_string}{hostname},{address}"
             prefix_string = "\n"
 
-    File.write(mem_host_store)
-    File.close()
+    host_file.write(mem_host_store)
+    host_file.close()
 
 
 
