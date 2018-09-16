@@ -23,4 +23,8 @@ echo Installing massping
 sudo apt-get install git -y
 git clone https://github.com/AndersBallegaard/Massping.git
 sudo mv Massping/massping.py /usr/local/bin/massping
+rm -rf Massping
+
+echo Install finished
+
 
