@@ -9,6 +9,7 @@ Massping is a fairly easy tool to use but here is some examples of how to use it
 
 ### Install
 Install can be done with the one liner below
+
 Remmeber to always read scripts before blindly executing them
 
     curl -sSL https://raw.githubusercontent.com/AndersBallegaard/Massping/master/install.sh | bash
