@@ -11,8 +11,16 @@ Get a help page:
     
     ./massping.py -h
 
+Create list of hosts
+
+    ./massping.py -cl
+
 Start massping on all host in file example_hosts.csv (provided in repository)
 
     ./massping.py -c example_hosts.csv
 
+
+Start massping with hosts from command line argument
+
+    ./massping.py -s [name],[address] [name],[address]........
 
